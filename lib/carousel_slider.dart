@@ -1,6 +1,7 @@
 library carousel_slider;
 
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:carousel_slider/carousel_state.dart';
 import 'package:flutter/gestures.dart';
@@ -215,7 +216,7 @@ class CarouselSliderState extends State<CarouselSlider>
             GestureRecognizerFactoryWithHandlers<_MultipleGestureRecognizer>(
                 () => _MultipleGestureRecognizer(),
                 (_MultipleGestureRecognizer instance) {
-          instance.onStart = (_) {
+          instance.onStart = (details) {
             onStart();
           };
           instance.onDown = (_) {
@@ -255,6 +256,7 @@ class CarouselSliderState extends State<CarouselSlider>
       {double? width,
       double? height,
       double? scale,
+      double? opacityValue,
       required double itemOffset}) {
     if (widget.options.enlargeStrategy == CenterPageEnlargeStrategy.height) {
       return SizedBox(child: child, width: width, height: height);
@@ -269,9 +271,12 @@ class CarouselSliderState extends State<CarouselSlider>
       }
       return Transform.scale(child: child, scale: scale!, alignment: alignment);
     }
+
     return Transform.scale(
         scale: scale!,
-        child: Container(child: child, width: width, height: height));
+        child: Opacity(
+            opacity: opacityValue!,
+            child: Container(child: child, width: width, height: height)));
   }
 
   void onStart() {
@@ -339,6 +344,7 @@ class CarouselSliderState extends State<CarouselSlider>
                   : const SizedBox.shrink()),
           builder: (BuildContext context, child) {
             double distortionValue = 1.0;
+            double opacityValue = 1.0;
             // if `enlargeCenterPage` is true, we must calculate the carousel item's height
             // to display the visual effect
             double itemOffset = 0;
@@ -378,6 +384,7 @@ class CarouselSliderState extends State<CarouselSlider>
                   options.enlargeFactor.clamp(0.0, 1.0);
               final num distortionRatio =
                   (1 - (itemOffset.abs() * enlargeFactor)).clamp(0.0, 1.0);
+              opacityValue = (1 - (itemOffset.abs())).clamp(0.0, 1.0);
               distortionValue =
                   Curves.easeOut.transform(distortionRatio as double);
             }
@@ -390,12 +397,14 @@ class CarouselSliderState extends State<CarouselSlider>
               return getCenterWrapper(getEnlargeWrapper(child,
                   height: distortionValue * height,
                   scale: distortionValue,
-                  itemOffset: itemOffset));
+                  itemOffset: itemOffset,
+                  opacityValue: opacityValue));
             } else {
               return getCenterWrapper(getEnlargeWrapper(child,
                   width: distortionValue * MediaQuery.of(context).size.width,
                   scale: distortionValue,
-                  itemOffset: itemOffset));
+                  itemOffset: itemOffset,
+                  opacityValue: opacityValue));
             }
           },
         );
