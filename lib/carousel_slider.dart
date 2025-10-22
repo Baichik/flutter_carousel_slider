@@ -383,8 +383,10 @@ class CarouselSliderState extends State<CarouselSlider>
               final double enlargeFactor =
                   options.enlargeFactor.clamp(0.0, 1.0);
               final num distortionRatio =
-                  (1 - (itemOffset.abs() * enlargeFactor)).clamp(0.0, 1.0);
-              opacityValue = (1 - (itemOffset.abs())).clamp(0.0, 1.0);
+                  (1 - (itemOffset.abs() * enlargeFactor))
+                      .clamp(options.scaleFactor, 1.0);
+              opacityValue =
+                  (1 - (itemOffset.abs())).clamp(options.opacityValue, 1.0);
               distortionValue =
                   Curves.easeOut.transform(distortionRatio as double);
             }

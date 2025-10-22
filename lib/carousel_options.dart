@@ -133,6 +133,10 @@ class CarouselOptions {
   /// Exposed clipBehavior of PageView
   final Clip clipBehavior;
 
+  final double opacityValue;
+
+  final double scaleFactor;
+
   CarouselOptions({
     this.height,
     this.aspectRatio = 16 / 9,
@@ -159,6 +163,8 @@ class CarouselOptions {
     this.enlargeFactor = 0.3,
     this.disableCenter = false,
     this.padEnds = true,
+    this.opacityValue = 0,
+    this.scaleFactor = 0,
     this.clipBehavior = Clip.hardEdge,
   });
 
